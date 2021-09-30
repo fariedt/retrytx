@@ -2,9 +2,10 @@
   "name": "retrytx",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/retrytx.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "echo \"tests?  what tests?!\""
   },
   "keywords": [],
   "author": "Faried Nawaz <faried@tintash.com> (https://www.tintash.com/)",
