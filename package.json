@@ -1,0 +1,21 @@
+{
+  "name": "retrytx",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Faried Nawaz <faried@tintash.com> (https://www.tintash.com/)",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^2.4.1",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@stacks/transactions": "^2.0.1",
+    "node-fetch": "^3.0.0"
+  }
+}
