@@ -103,6 +103,10 @@ async function fetchtx(): Promise<Tx> {
   // console.debug(`fetching from ${url}...`);
   const resp = await fetch(url);
   const data = await resp.json();
+  if (resp.status !== 200) {
+    console.error(`error: ${resp.status} ${JSON.stringify(data, null, 2)}`);
+    process.exit(1);
+  }
   const tx = deserializeTransaction(data.raw_tx);
 
   // console.debug(data.raw_tx);
