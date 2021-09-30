@@ -1,4 +1,4 @@
-# Retry STX Transactions with a higher fee
+# Retry STX transactions with a higher fee
 
 ## Build:
 
@@ -16,7 +16,7 @@
 ### Retry with a larger fee:
 
     node dist/retrytx.js --txid 0xwhatever --fee new-fee-in-ustx \
-    [--network testnet | mainnet] [--key secret-key]
+    --key secret-key [--network testnet | mainnet]
 
 The secret key can also be specified in the `$SECRET_KEY` environment
 variable:
@@ -29,3 +29,4 @@ variable:
 
 * Lightly tested on the testnet.
 * It doesn't support sponsored transactions right now.
+* How do tell if a transaction has been mined?

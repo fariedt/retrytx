@@ -9,7 +9,7 @@
   },
   "keywords": [],
   "author": "Faried Nawaz <faried@tintash.com> (https://www.tintash.com/)",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "prettier": "^2.4.1",
     "ts-node": "^10.2.1",
