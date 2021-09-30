@@ -56,8 +56,17 @@ function checkreqs() {
     usage(0);
   }
 
+  if (options.fee !== "") {
+    try {
+      options.fee = BigInt(options.fee);
+    } catch (e) {
+      console.error(e);
+      usage(1);
+    }
+  }
+
   options.key = options.key || ENV_SECRET_KEY;
-  if (options.key.length !== 66 && options.key.length !== 64) {
+  if (options.fee && options.key.length !== 66 && options.key.length !== 64) {
     console.error(`invalid secret key: ${options.key}`);
     usage(1);
   }
@@ -70,15 +79,6 @@ function checkreqs() {
   if (options.network !== "mainnet" && options.network !== "testnet") {
     console.error(`invalid network: ${options.network}`);
     usage(1);
-  }
-
-  if (options.fee !== "") {
-    try {
-      options.fee = BigInt(options.fee);
-    } catch (e) {
-      console.error(e);
-      usage(1);
-    }
   }
 }
 
