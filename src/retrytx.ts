@@ -25,6 +25,7 @@ interface Tx {
   to: string;
   fee: bigint;
   nonce: bigint;
+  status: string;
 }
 
 const ENV_SECRET_KEY = process.env.SECRET_KEY || "";
@@ -76,6 +77,10 @@ function checkreqs() {
     usage(1);
   }
 
+  if (options.txid.slice(2) !== "0x") {
+    options.txid = `0x${options.txid}`;
+  }
+
   if (options.network !== "mainnet" && options.network !== "testnet") {
     console.error(`invalid network: ${options.network}`);
     usage(1);
@@ -99,17 +104,29 @@ async function fetchtx(): Promise<Tx> {
     network = new StacksTestnet();
   }
 
-  const url = `${network.coreApiUrl}/extended/v1/tx/${options.txid}/raw`;
-  // console.debug(`fetching from ${url}...`);
+  const url = `${network.coreApiUrl}/extended/v1/tx/${options.txid}`;
   const resp = await fetch(url);
   const data = await resp.json();
   if (resp.status !== 200) {
     console.error(`error: ${resp.status} ${JSON.stringify(data, null, 2)}`);
     process.exit(1);
   }
-  const tx = deserializeTransaction(data.raw_tx);
 
-  // console.debug(data.raw_tx);
+  const status = data.tx_status;
+
+  const rawurl = `${network.coreApiUrl}/extended/v1/tx/${options.txid}/raw`;
+  // console.debug(`fetching from ${url}...`);
+  const rawresp = await fetch(rawurl);
+  const rawdata = await rawresp.json();
+  if (rawresp.status !== 200) {
+    console.error(
+      `error: ${rawresp.status} ${JSON.stringify(rawdata, null, 2)}`
+    );
+    process.exit(1);
+  }
+  const tx = deserializeTransaction(rawdata.raw_tx);
+
+  // console.debug(rawdata.raw_tx);
 
   let sp: SpendingCondition;
   let txtype: string;
@@ -150,20 +167,27 @@ async function fetchtx(): Promise<Tx> {
       to = "n/a";
   }
 
-  return { tx, network, sp, txtype, from, to, fee, nonce };
+  return { tx, status, network, sp, txtype, from, to, fee, nonce };
 }
 
 async function describe() {
-  const { txtype, from, to, fee, nonce } = await fetchtx();
+  const { txtype, status, from, to, fee, nonce } = await fetchtx();
 
   console.log(`tx type: ${txtype}
 from ${from} to ${to}
 fee: ${fee}, nonce: ${nonce}
+tx status: ${status}
 `);
 }
 
 async function resubmit() {
-  const { tx, network, fee, from } = await fetchtx();
+  const { status, tx, network, fee, from } = await fetchtx();
+
+  if (status !== "pending") {
+    console.warn(
+      `transaction ${options.txid} might already be mined; status: ${status}`
+    );
+  }
 
   if (options.fee <= fee) {
     console.error(

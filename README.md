@@ -27,5 +27,4 @@ variable:
 
 ## Caveats:
 
-* Lightly tested on the testnet.
-* How do tell if a transaction has been mined?
+- Lightly tested on the testnet.
