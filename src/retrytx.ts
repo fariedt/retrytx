@@ -8,10 +8,10 @@ import {
   deserializeTransaction,
   getAddressFromPrivateKey,
   PayloadType,
-  SingleSigSpendingCondition,
   SpendingCondition,
+  sponsorTransaction,
   StacksTransaction,
-  TransactionSigner
+  TransactionSigner,
 } from "@stacks/transactions";
 import { StacksNetwork, StacksMainnet, StacksTestnet } from "@stacks/network";
 import { TransactionVersion } from "@stacks/common";
@@ -32,7 +32,7 @@ const ENV_SECRET_KEY = process.env.SECRET_KEY || "";
 const options = getopts(process.argv, {
   alias: { help: ["h"] },
   default: { network: "mainnet", fee: "" },
-  string: ["txid", "key", "fee"]
+  string: ["txid", "key", "fee"],
 });
 
 function usage(exit: number) {
@@ -187,18 +187,24 @@ async function resubmit() {
     process.exit(1);
   }
 
-  if (tx.auth.authType === AuthType.Sponsored) {
-    console.error("cannot handle sponsored transactions yet");
-    process.exit(1);
-  }
+  let newtx: StacksTransaction;
 
   const privkey = createStacksPrivateKey(options.key);
+  if (tx.auth.authType === AuthType.Standard) {
+    tx.setFee(options.fee);
+    const signer = new TransactionSigner(tx);
+    signer.signOrigin(privkey);
+    newtx = signer.transaction;
+  } else {
+    newtx = await sponsorTransaction({
+      transaction: tx,
+      sponsorPrivateKey: options.key,
+      fee: options.fee,
+      network: network,
+    });
+  }
 
-  tx.setFee(options.fee);
-  const signer = new TransactionSigner(tx);
-  signer.signOrigin(privkey);
-
-  const reply = await broadcastTransaction(signer.transaction, network);
+  const reply = await broadcastTransaction(newtx, network);
   console.log(reply);
 }
 

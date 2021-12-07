@@ -28,5 +28,4 @@ variable:
 ## Caveats:
 
 * Lightly tested on the testnet.
-* It doesn't support sponsored transactions right now.
 * How do tell if a transaction has been mined?
