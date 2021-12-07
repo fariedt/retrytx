@@ -77,7 +77,7 @@ function checkreqs() {
     usage(1);
   }
 
-  if (options.txid.slice(2) !== "0x") {
+  if (options.txid.slice(0, 2) !== "0x") {
     options.txid = `0x${options.txid}`;
   }
 
