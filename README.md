@@ -28,3 +28,7 @@ variable:
 ## Caveats:
 
 - Lightly tested on the testnet.
+
+## Miscellany
+
+- `src/mk-sponsored.ts`: sample code to make a sponsored contract call on the testnet.
