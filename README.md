@@ -13,6 +13,14 @@
 
 `--network` can be `testnet` or `mainnet`; defaults to `mainnet`.
 
+### Rebroadcast a pending transaction:
+
+    node dist/retrytx.js --txid 0xwhatever --broadcast node-url [--network testnet | mainnet]
+
+`--network` can be `testnet` or `mainnet`; defaults to `mainnet`.
+
+`--broadcast`: `node-url` should be a valid stacks node endpoint for the network.
+
 ### Retry with a larger fee:
 
     node dist/retrytx.js --txid 0xwhatever --fee new-fee-in-ustx \

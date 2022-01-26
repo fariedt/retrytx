@@ -33,7 +33,7 @@ const ENV_SECRET_KEY = process.env.SECRET_KEY || "";
 const options = getopts(process.argv, {
   alias: { help: ["h"] },
   default: { network: "mainnet", fee: "" },
-  string: ["txid", "key", "fee"],
+  string: ["txid", "key", "fee", "broadcast"],
 });
 
 function usage(exit: number) {
@@ -171,7 +171,13 @@ async function fetchtx(): Promise<Tx> {
 }
 
 async function describe() {
-  const { txtype, status, from, to, fee, nonce } = await fetchtx();
+  const { txtype, status, tx, network, from, to, fee, nonce } = await fetchtx();
+  if (options.broadcast) {
+    const newNetwork = network.isMainnet()
+      ? new StacksMainnet({ url: options.broadcast })
+      : new StacksTestnet({ url: options.broadcast });
+    console.log(await broadcastTransaction(tx, newNetwork));
+  }
 
   console.log(`tx type: ${txtype}
 from ${from} to ${to}
